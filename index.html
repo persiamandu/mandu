@@ -42,9 +42,17 @@
   justify-content: flex-start;
 }
 
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+}
+
 .radio-group label {
   display: inline-flex;
-  align-items: center;
+  align-items: center;      /* ✅ 수직 정렬 */
   gap: 6px;
   background: #f9f9f9;
   border-radius: 6px;
@@ -52,13 +60,11 @@
   padding: 6px 10px;
   white-space: nowrap;
   flex: 0 1 calc(50% - 12px);
-  line-height: 1.4; /* ✅ 줄간격 고정 */
 }
 
 .radio-group input[type="checkbox"],
 .radio-group input[type="radio"] {
-  vertical-align: middle;    /* ✅ 세로 정렬 */
-  flex-shrink: 0;
+  vertical-align: middle;   /* ✅ input 요소 수직 정렬 */
 }
 
 
