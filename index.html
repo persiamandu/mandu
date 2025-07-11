@@ -34,48 +34,80 @@
       border-radius: 6px;
       cursor: pointer;
     }
- .radio-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-  justify-content: flex-start;
-}
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      justify-content: flex-start;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      font-size: 1rem;
+      padding: 10px 14px;
+      flex: 1 1 100%;
+      box-sizing: border-box;
+      white-space: normal;
+    }
+    .radio-group input[type="checkbox"],
+    .radio-group input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 768px) {
+      .radio-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
 
-.radio-group label {
-  display: flex;
+    #loadingOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 10000;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  background: #f9f9f9;
-  border-radius: 6px;
-  font-size: 1rem;
-  padding: 10px 14px;
-  flex: 1 1 100%;
-  box-sizing: border-box;
-  white-space: normal;  /* 기존 nowrap 제거 */
+  flex-direction: column;
+  animation: blink 1s infinite;
 }
-
-.radio-group input[type="checkbox"],
-.radio-group input[type="radio"] {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  @keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-
-
-
-
-   @media (max-width: 768px) {
-  .radio-group {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-  </style>
+</style>
 </head>
 <body>
+  <div id="loadingOverlay">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+      <div style="
+        width: 60px;
+        height: 60px;
+        border: 6px solid #ccc;
+        border-top: 6px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite, blink 1s infinite;
+        margin-bottom: 15px;
+      "></div>
+      <p style="font-size: 20px; animation: blink 1s infinite;">AI가 생각중입니다...</p>
+    </div>
+  </div>
   <div class="container">
+<div id="loadingOverlay">AI가 생각중입니다...</div>
 
     <!-- Step 0: 시작화면 -->
     <div class="step active" id="step0">
@@ -293,118 +325,123 @@
   </div>
 </div>
 
-   <script>
-    let currentStep = 0;
-
-    function nextStep() {
-  document.getElementById(`step${currentStep}`).classList.remove('active');
-  currentStep++;
-  document.getElementById(`step${currentStep}`).classList.add('active');
-
-  // ✅ Step 5 진입 시에만 추천 함수 실행
-  if (currentStep === 5) {
-    renderServiceRecommendations();
-  }
-}
+  <script>
   
+  let currentStep = 0;
+
+  function nextStep() {
+    if (currentStep === 3) {
+      showLoadingThenGoToNextStep();
+      return;
+    }
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    currentStep++;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    if (currentStep === 5) {
+      renderServiceRecommendations();
+    }
+  }
+
+  function showLoadingThenGoToNextStep() {
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    document.getElementById("loadingOverlay").style.display = "flex";
+    setTimeout(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
+      currentStep++;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+    }, 3000);
+  }
+
 function prevStep() {
   document.getElementById(`step${currentStep}`).classList.remove('active');
   currentStep--;
   document.getElementById(`step${currentStep}`).classList.add('active');
 }
+
 function renderServiceRecommendations() {
-    const age = parseInt(document.getElementById("age").value);
-    const income = document.getElementById("income").value;
-    const selectedNeeds = Array.from(document.querySelectorAll("input[name='needs']:checked")).map(el => el.value);
+  const age = parseInt(document.getElementById("age").value);
+  const income = document.getElementById("income").value;
+  const selectedNeeds = Array.from(document.querySelectorAll("input[name='needs']:checked")).map(el => el.value);
 
-    const results = [];
-
- 
- 
-    if (age >= 65) {
-      results.push({
-        title: "노인일자리사업",
-        desc: "만 65세 이상 대상, 월 활동비 지급 (최대 30만 원). 지역 노인복지센터 또는 읍면동 통해 신청 가능."
-      });
-    }
-  
-    if (income === "기초수급자" || selectedNeeds.includes("생계")) {
-      results.push({
-        title: "긴급복지지원 (생계)",
-        desc: "최근 위기상황(질병, 실직 등) 시 생계비 최대 154만 원 지원. 읍면동 행정복지센터에서 신청."
-      });
-    }
-
-    if (selectedNeeds.includes("돌봄") || selectedNeeds.includes("의료")) {
-      results.push({
-        title: "방문요양서비스",
-        desc: "장기요양등급자 대상, 가정방문 요양보호사 지원. 건강보험공단을 통해 신청 가능."
-      });
-    }
-
-    const resultDiv = document.getElementById("recommendationArea");
-    resultDiv.innerHTML = results.map(service => `
-      <div style="border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px; text-align:left;">
-        <strong>• ${service.title}</strong><br>${service.desc}
-      </div>
-    `).join('');
+  const results = [];
+  if (age >= 65) {
+    results.push({
+      title: "노인일자리사업",
+      desc: "만 65세 이상 대상, 월 활동비 지급 (최대 30만 원). 지역 노인복지센터 또는 읍면동 통해 신청 가능."
+    });
   }
+  if (income === "기초수급자" || selectedNeeds.includes("생계")) {
+    results.push({
+      title: "긴급복지지원 (생계)",
+      desc: "최근 위기상황(질병, 실직 등) 시 생계비 최대 154만 원 지원. 읍면동 행정복지센터에서 신청."
+    });
+  }
+  if (selectedNeeds.includes("돌봄") || selectedNeeds.includes("의료")) {
+    results.push({
+      title: "방문요양서비스",
+      desc: "장기요양등급자 대상, 가정방문 요양보호사 지원. 건강보험공단을 통해 신청 가능."
+    });
+  }
+
+  const resultDiv = document.getElementById("recommendationArea");
+  resultDiv.innerHTML = results.map(service => `
+    <div style="border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px; text-align:left;">
+      <strong>• ${service.title}</strong><br>${service.desc}
+    </div>
+  `).join('');
+}
+
 function simulateSTT() {
   const example = "최근 병원비로 인해 생활비 부족을 호소함. 외부 지원 희망.";
   document.getElementById("stt-output").innerText = `"${example}" (자동 인식됨)`;
 }
+
 function restartSimulation() {
-  // 현재 Step 비활성화
   document.getElementById(`step${currentStep}`).classList.remove('active');
   currentStep = 0;
-
-  // Step 0 활성화
   document.getElementById(`step${currentStep}`).classList.add('active');
-
-  // 1. 입력 필드 초기화
   const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
   inputs.forEach(input => input.value = "");
-
-  // 2. select 초기화
   const selects = document.querySelectorAll("select");
   selects.forEach(select => select.selectedIndex = 0);
-
-  // 3. 체크박스 및 라디오 초기화
   const checks = document.querySelectorAll("input[type='checkbox'], input[type='radio']");
   checks.forEach(check => check.checked = false);
-
-  // 4. 추천 결과 영역 초기화
   document.getElementById("recommendationArea").innerHTML = "";
-
-  // 5. 음성 인식 텍스트 초기화
   document.getElementById("stt-output").innerText = "";
 }
-     function handleFinalSummary() {
-  alert("상담이 정상적으로 종료되었습니다.");
 
-  // 기본 정보 채우기
+function handleFinalSummary() {
+  alert("상담이 정상적으로 종료되었습니다.");
   document.getElementById("popupName").innerText = document.getElementById("name").value || "미입력";
   document.getElementById("popupAge").innerText = document.getElementById("age").value || "미입력";
-
   const needs = Array.from(document.querySelectorAll("input[name='needs']:checked")).map(el => el.value);
   document.getElementById("popupNeeds").innerText = needs.length > 0 ? needs.join(", ") : "없음";
-
-  // 추천 서비스 복사
   const original = document.getElementById("recommendationArea").innerHTML;
   document.getElementById("popupServices").innerHTML = original;
-
-  // 팝업 표시
   document.getElementById("summaryPopup").style.display = "block";
 }
 
 function closeSummaryPopup() {
   document.getElementById("summaryPopup").style.display = "none";
-
-  // 시뮬레이터 전체 종료 효과 (예: 새로고침 또는 Step0으로 돌아가기)
-  restartSimulation();  // 또는 location.reload();
+  restartSimulation();
 }
-
 </script>
-
+  <div id="loadingOverlay">
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="
+      width: 60px;
+      height: 60px;
+      border: 6px solid #ccc;
+      border-top: 6px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite, blink 1s infinite;
+      margin-bottom: 15px;
+    "></div>
+    <p style="font-size: 20px; animation: blink 1s infinite;">AI가 생각중입니다...</p>
+  </div>
+</div>
+</div>
+</div>
 </body>
 </html>
+
