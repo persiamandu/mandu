@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="UTF-8" />
   <title>스마트 복지상담 시뮬레이터</title>
   <style>
@@ -25,6 +25,7 @@
       margin: 8px 0;
       width: 100%;
       box-sizing: border-box;
+      font-size: 1rem;
     }
     .btn-primary {
       background: #007bff;
@@ -35,8 +36,10 @@
     }
     .radio-group {
       display: flex;
-      gap: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 20px;
+      justify-content: flex-start;
     }
     .radio-group label {
       display: flex;
@@ -44,7 +47,21 @@
       gap: 5px;
       white-space: nowrap;
     }
-    
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      .container {
+        padding: 20px;
+      }
+      h2, h3, h4 {
+        font-size: 1.2rem;
+      }
+      p, label, button, select, input, textarea {
+        font-size: 0.95rem;
+      }
+    }
   </style>
 </head>
 <body>
