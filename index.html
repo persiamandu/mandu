@@ -34,7 +34,7 @@
       border-radius: 6px;
       cursor: pointer;
     }
-  .radio-group {
+ .radio-group {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -43,14 +43,17 @@
 }
 
 .radio-group label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  background: #f1f1f1;
-  border-radius: 8px;
+  background: #f9f9f9;
+  border-radius: 6px;
   font-size: 0.95rem;
+  padding: 6px 10px;
   white-space: nowrap;
+
+  /* 👇 핵심: 너비 제한 (50% 이하로 자동 줄바꿈 유도) */
+  flex: 0 1 calc(50% - 12px);
 }
 
 
