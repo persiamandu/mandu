@@ -325,7 +325,7 @@
   </div>
 </div>
 
-  <script>
+ <script>
   
   let currentStep = 0;
 
@@ -337,9 +337,7 @@
     document.getElementById(`step${currentStep}`).classList.remove('active');
     currentStep++;
     document.getElementById(`step${currentStep}`).classList.add('active');
-    if (currentStep === 5) {
-      renderServiceRecommendations();
-    }
+    
   }
 
   function showLoadingThenGoToNextStep() {
@@ -348,6 +346,13 @@
     setTimeout(() => {
       document.getElementById("loadingOverlay").style.display = "none";
       currentStep++;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+      if (currentStep === 5) {
+        renderServiceRecommendations();
+      }
+      if (currentStep === 5) {
+        renderServiceRecommendations();
+      }
       document.getElementById(`step${currentStep}`).classList.add('active');
     }, 3000);
   }
@@ -426,22 +431,6 @@ function closeSummaryPopup() {
   restartSimulation();
 }
 </script>
-  <div id="loadingOverlay">
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div style="
-      width: 60px;
-      height: 60px;
-      border: 6px solid #ccc;
-      border-top: 6px solid #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite, blink 1s infinite;
-      margin-bottom: 15px;
-    "></div>
-    <p style="font-size: 20px; animation: blink 1s infinite;">AI가 생각중입니다...</p>
-  </div>
-</div>
-</div>
 </div>
 </body>
 </html>
-
